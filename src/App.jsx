@@ -5,8 +5,10 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
-  const [questions, setQuestions] = useState(null)
+  const [allQuestions, setAllQuestions] = useState(null)
+  const [filteredQuestions, setFilteredQuestions] = useState(null)
   const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('all')
 
     /**
      * Fetch 50 questions from the Open Trivia Database API on page load
@@ -16,7 +18,8 @@ function App() {
     fetch('https://opentdb.com/api.php?amount=50')
       .then(res => res.json())
       .then(json => {
-        setQuestions(json.results)
+        setAllQuestions(json.results)
+        setFilteredQuestions(json.results)
         const uniqueCategories = [...new Set(json.results.map(q => q.category))]
         uniqueCategories.sort()
         setCategories(uniqueCategories)
@@ -24,9 +27,21 @@ function App() {
       .catch(err => console.error(err))
   }, [])
 
+  /**
+   * Filter questions based on selected category
+   */
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setFilteredQuestions(allQuestions)
+    } else {
+      const filtered = allQuestions?.filter(q => q.category === selectedCategory)
+      setFilteredQuestions(filtered)
+    }
+  }, [selectedCategory])
+
   return (
     <>
-      <select>
+      <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
         <option value="all">All Categories</option>
         {categories.map((category, index) => (
           <option key={index} value={category}>{category}</option>
@@ -52,7 +67,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <div>{questions ? <div>{JSON.stringify(questions)}</div> : <p>No data available</p>}</div>
+      <div>{filteredQuestions ? <div>{JSON.stringify(filteredQuestions)}</div> : <p>No data available</p>}</div>
     </>
   )
 }
