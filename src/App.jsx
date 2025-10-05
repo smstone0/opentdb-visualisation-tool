@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import DifficultyPieChart from './components/DifficultyPieChart.jsx'
+import DistributionPieChart from './components/DistributionPieChart.jsx'
 import DistributionMixBarChart from './components/DistributionMixBarChart.jsx'
 
 function App() {
@@ -91,7 +91,9 @@ function App() {
         ))}
       </select>
       <div className="chart-container">
-        <DistributionMixBarChart data={categoryDifficultyDistribution} />
+        {selectedCategory === 'all' ? <DistributionMixBarChart data={categoryDifficultyDistribution} />
+        : <DistributionPieChart data={difficultyDistribution} />
+        }
       </div>
       {/* TODO: Add pie charts for overall proportional percentage difficulty and category distributions */}
       <div>

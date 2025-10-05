@@ -15,14 +15,17 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function DifficultyPieChart({distribution, chartTitle}) {
-  const data = Object.entries(distribution).map(([name, value]) => ({ name, value }));
+export default function DistributionPieChart({data, chartTitle}) {
+  if (!data || Object.keys(data).length === 0) {
+    return <p>No data available to display the chart</p>;
+  }
+  const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <h3>{chartTitle}</h3>
+      {/* <h3>{chartTitle}</h3> */}
       <PieChart width={400} height={400}>
         <Pie
-          data={data}
+          data={chartData}
           cx="50%"
           cy="50%"
           labelLine={false}
@@ -32,11 +35,11 @@ export default function DifficultyPieChart({distribution, chartTitle}) {
           dataKey="value"
           isAnimationActive={true}
         >
-          {data.map((entry, index) => (
+          {chartData.map((entry, index) => (
             <Cell key={`cell-${entry.name}`} fill={colours[index % colours.length]} />
           ))}
         </Pie>
-        <Legend iconType="circle" iconSize={10} />
+        <Legend iconSize={10} />
       </PieChart>
     </ResponsiveContainer>
   );
