@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import DifficultyPieChart from './components/DifficultyPieChart.jsx'
+import DistributionMixBarChart from './components/DistributionMixBarChart.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,6 +13,16 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [categoryDistribution, setCategoryDistribution] = useState({})
   const [difficultyDistribution, setDifficultyDistribution] = useState({})
+  const [categoryDifficultyDistribution, setCategoryDifficultyDistribution] = useState({})
+
+  function getCategoryDifficultyCounts(questions) {
+    if (!questions) return {}
+    return questions.reduce((acc, q) => {
+      if (!acc[q.category]) acc[q.category] = {}
+      acc[q.category][q.difficulty] = (acc[q.category][q.difficulty] || 0) + 1
+      return acc
+    }, {})
+  }
 
   function getCategoryCounts(questions) {
     if (!questions) return {}
@@ -39,10 +50,14 @@ function App() {
       .then(json => {
         setAllQuestions(json.results)
         setFilteredQuestions(json.results)
-        
+        setSelectedCategory('all')
+
         const uniqueCategories = [...new Set(json.results.map(q => q.category))]
         uniqueCategories.sort()
         setCategories(uniqueCategories)
+
+        const categoryDifficultyCounts = getCategoryDifficultyCounts(json.results)
+        setCategoryDifficultyDistribution(categoryDifficultyCounts)
 
         const categoryCounts = getCategoryCounts(json.results)
         setCategoryDistribution(categoryCounts)
@@ -65,7 +80,6 @@ function App() {
       filtered = allQuestions?.filter(q => q.category === selectedCategory)
     }
     setFilteredQuestions(filtered)
-    setDifficultyDistribution(getDifficultyCounts(filtered))
   }, [selectedCategory])
 
   return (
@@ -77,11 +91,9 @@ function App() {
         ))}
       </select>
       <div className="chart-container">
-        <DifficultyPieChart distribution={difficultyDistribution} chartTitle="Question Difficulty Distribution" />
+        <DistributionMixBarChart data={categoryDifficultyDistribution} />
       </div>
-      <div className="chart-container">
-       {/* TODO: Add bar chart for category distribution and filter by selected category */}
-      </div>
+      {/* TODO: Add pie charts for overall proportional percentage difficulty and category distributions */}
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
