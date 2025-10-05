@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import DifficultyPieChart from './components/DifficultyPieChart.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -9,6 +10,24 @@ function App() {
   const [filteredQuestions, setFilteredQuestions] = useState(null)
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [categoryDistribution, setCategoryDistribution] = useState({})
+  const [difficultyDistribution, setDifficultyDistribution] = useState({})
+
+  function getCategoryCounts(questions) {
+    if (!questions) return {}
+    return questions.reduce((acc, q) => {
+      acc[q.category] = (acc[q.category] || 0) + 1
+      return acc
+    }, {})
+  }
+
+  function getDifficultyCounts(questions) {
+    if (!questions) return {}
+    return questions.reduce((acc, q) => {
+      acc[q.difficulty] = (acc[q.difficulty] || 0) + 1
+      return acc
+    }, {})
+  }
 
     /**
      * Fetch 50 questions from the Open Trivia Database API on page load
@@ -20,23 +39,33 @@ function App() {
       .then(json => {
         setAllQuestions(json.results)
         setFilteredQuestions(json.results)
+        
         const uniqueCategories = [...new Set(json.results.map(q => q.category))]
         uniqueCategories.sort()
         setCategories(uniqueCategories)
+
+        const categoryCounts = getCategoryCounts(json.results)
+        setCategoryDistribution(categoryCounts)
+
+        const difficultyCounts = getDifficultyCounts(json.results)
+        setDifficultyDistribution(difficultyCounts)
       })
       .catch(err => console.error(err))
   }, [])
 
   /**
    * Filter questions based on selected category
+   * Update difficulty distribution based on new filtered questions
    */
   useEffect(() => {
+    let filtered = []
     if (selectedCategory === 'all') {
-      setFilteredQuestions(allQuestions)
+      filtered = allQuestions
     } else {
-      const filtered = allQuestions?.filter(q => q.category === selectedCategory)
-      setFilteredQuestions(filtered)
+      filtered = allQuestions?.filter(q => q.category === selectedCategory)
     }
+    setFilteredQuestions(filtered)
+    setDifficultyDistribution(getDifficultyCounts(filtered))
   }, [selectedCategory])
 
   return (
@@ -47,6 +76,12 @@ function App() {
           <option key={index} value={category}>{category}</option>
         ))}
       </select>
+      <div className="chart-container">
+        <DifficultyPieChart distribution={difficultyDistribution} chartTitle="Question Difficulty Distribution" />
+      </div>
+      <div className="chart-container">
+       {/* TODO: Add bar chart for category distribution and filter by selected category */}
+      </div>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
