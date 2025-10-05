@@ -12,8 +12,9 @@ const DistributionMixBarChart = ({data}) => {
     }));
 
   return (
+    <>
+    <h3>Distribution of Questions by All Categories and Difficulties</h3>
       <ResponsiveContainer width="100%" height="100%">
-        {/* <h3>Distribution of Questions by Category and Difficulty</h3> */}
         <BarChart
           width={500}
           height={300}
@@ -22,19 +23,20 @@ const DistributionMixBarChart = ({data}) => {
             top: 20,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 200,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} />
           <YAxis />
           <Tooltip />
-          <Legend />
+          <Legend verticalAlign='top' height={36} />
           <Bar dataKey="easy" stackId="a" fill="#00C49F" />
           <Bar dataKey="medium" stackId="a" fill="#FFBB28" />
           <Bar dataKey="hard" stackId="a" fill="#EC4343FF"/>
         </BarChart>
       </ResponsiveContainer>
+    </>
     );
 };
 

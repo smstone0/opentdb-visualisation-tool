@@ -88,7 +88,7 @@ function App() {
           <DistributionMixBarChart data={categoryDifficultyDistribution} />
         ) : (
           <>
-            <DistributionPieChart data={categoryCounts} chartTitle={`Category Count: ${categoryCounts.selected || 0} / ${categoryCounts.total || 0}`} />
+            <DistributionPieChart data={categoryCounts} chartTitle={`Category Count: ${categoryCounts.selected || 0}/${categoryCounts.total || 0}`} />
             <DistributionPieChart data={difficultyCounts} chartTitle={`Difficulty Breakdown for ${selectedCategory}`} />
           </>
         )}
