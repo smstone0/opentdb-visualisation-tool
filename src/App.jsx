@@ -7,12 +7,11 @@ import DistributionMixBarChart from './components/DistributionMixBarChart.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
-  const [allQuestions, setAllQuestions] = useState(null)
-  const [filteredQuestions, setFilteredQuestions] = useState(null)
+  const [questions, setQuestions] = useState(null)
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [categoryDistribution, setCategoryDistribution] = useState({})
-  const [difficultyDistribution, setDifficultyDistribution] = useState({})
+  const [categoryCounts, setCategoryCounts] = useState({})
+  const [difficultyCounts, setDifficultyCounts] = useState({})
   const [categoryDifficultyDistribution, setCategoryDifficultyDistribution] = useState({})
 
   function getCategoryDifficultyCounts(questions) {
@@ -24,17 +23,23 @@ function App() {
     }, {})
   }
 
-  function getCategoryCounts(questions) {
+  function getCategoryCounts(questions, selectedCategory) {
     if (!questions) return {}
-    return questions.reduce((acc, q) => {
-      acc[q.category] = (acc[q.category] || 0) + 1
-      return acc
-    }, {})
+    const total = questions.length
+    if (selectedCategory === 'all') {
+      return { total }
+    }
+    const selected = questions.filter(q => q.category === selectedCategory).length
+    return { selected, total }
   }
 
-  function getDifficultyCounts(questions) {
+  function getDifficultyCounts(questions, selectedCategory) {
     if (!questions) return {}
-    return questions.reduce((acc, q) => {
+    let filtered = questions
+    if (selectedCategory !== 'all') {
+      filtered = questions.filter(q => q.category === selectedCategory)
+    }
+    return filtered.reduce((acc, q) => {
       acc[q.difficulty] = (acc[q.difficulty] || 0) + 1
       return acc
     }, {})
@@ -48,8 +53,7 @@ function App() {
     fetch('https://opentdb.com/api.php?amount=50')
       .then(res => res.json())
       .then(json => {
-        setAllQuestions(json.results)
-        setFilteredQuestions(json.results)
+        setQuestions(json.results)
         setSelectedCategory('all')
 
         const uniqueCategories = [...new Set(json.results.map(q => q.category))]
@@ -58,12 +62,6 @@ function App() {
 
         const categoryDifficultyCounts = getCategoryDifficultyCounts(json.results)
         setCategoryDifficultyDistribution(categoryDifficultyCounts)
-
-        const categoryCounts = getCategoryCounts(json.results)
-        setCategoryDistribution(categoryCounts)
-
-        const difficultyCounts = getDifficultyCounts(json.results)
-        setDifficultyDistribution(difficultyCounts)
       })
       .catch(err => console.error(err))
   }, [])
@@ -73,14 +71,9 @@ function App() {
    * Update difficulty distribution based on new filtered questions
    */
   useEffect(() => {
-    let filtered = []
-    if (selectedCategory === 'all') {
-      filtered = allQuestions
-    } else {
-      filtered = allQuestions?.filter(q => q.category === selectedCategory)
-    }
-    setFilteredQuestions(filtered)
-  }, [selectedCategory])
+    setCategoryCounts(getCategoryCounts(questions || [], selectedCategory))
+    setDifficultyCounts(getDifficultyCounts(questions || [], selectedCategory))
+  }, [selectedCategory, questions])
 
   return (
     <>
@@ -91,11 +84,15 @@ function App() {
         ))}
       </select>
       <div className="chart-container">
-        {selectedCategory === 'all' ? <DistributionMixBarChart data={categoryDifficultyDistribution} />
-        : <DistributionPieChart data={difficultyDistribution} />
-        }
+        {selectedCategory === 'all' ? (
+          <DistributionMixBarChart data={categoryDifficultyDistribution} />
+        ) : (
+          <>
+            <DistributionPieChart data={categoryCounts} chartTitle={`Category Count: ${categoryCounts.selected || 0} / ${categoryCounts.total || 0}`} />
+            <DistributionPieChart data={difficultyCounts} chartTitle={`Difficulty Breakdown for ${selectedCategory}`} />
+          </>
+        )}
       </div>
-      {/* TODO: Add pie charts for overall proportional percentage difficulty and category distributions */}
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -116,7 +113,6 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <div>{filteredQuestions ? <div>{JSON.stringify(filteredQuestions)}</div> : <p>No data available</p>}</div>
     </>
   )
 }
