@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import DistributionPieChart from './components/DistributionPieChart.jsx'
 import DistributionMixBarChart from './components/DistributionMixBarChart.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
   const [questions, setQuestions] = useState(null)
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -67,8 +64,7 @@ function App() {
   }, [])
 
   /**
-   * Filter questions based on selected category
-   * Update difficulty distribution based on new filtered questions
+   * Update categoryCounts and difficultyCounts when selected category changes
    */
   useEffect(() => {
     setCategoryCounts(getCategoryCounts(questions || [], selectedCategory))
@@ -77,6 +73,7 @@ function App() {
 
   return (
     <>
+      <h1>OpenTDB Visualisation Tool</h1>
       <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
         <option value="all">All Categories</option>
         {categories.map((category, index) => (
@@ -93,26 +90,8 @@ function App() {
           </>
         )}
       </div>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div>{JSON.stringify(categoryCounts)} {JSON.stringify(difficultyCounts)}</div>
+      <div>{JSON.stringify(questions)}</div>
     </>
   )
 }
