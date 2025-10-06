@@ -17,7 +17,7 @@ const DistributionMixBarChart = ({data}) => {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}
-          height={300}
+          height={500}
           data={chartData}
           margin={{
             top: 20,
@@ -33,7 +33,7 @@ const DistributionMixBarChart = ({data}) => {
           <Legend verticalAlign='top' height={36} />
           <Bar dataKey="easy" stackId="a" fill="#00C49F" />
           <Bar dataKey="medium" stackId="a" fill="#FFBB28" />
-          <Bar dataKey="hard" stackId="a" fill="#EC4343FF"/>
+          <Bar dataKey="hard" stackId="a" fill="#F16F6F" />
         </BarChart>
       </ResponsiveContainer>
     </>

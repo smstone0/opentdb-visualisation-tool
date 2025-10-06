@@ -1,7 +1,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from 'recharts';
 
 const radian = Math.PI / 180;
-const colours = ['#00C49F', '#FFBB28', '#EC4343FF'];
+const colours = ['#00C49F', '#FFBB28', '#F16F6F'];
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -9,7 +9,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   const y = cy + radius * Math.sin(-(midAngle ?? 0) * radian);
 
   return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+    <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
       {`${((percent ?? 1) * 100).toFixed(0)}%`}
     </text>
   );
@@ -40,7 +40,7 @@ export default function DistributionPieChart({data, chartTitle}) {
             <Cell key={`cell-${entry.name}`} fill={colours[index % colours.length]} />
           ))}
         </Pie>
-        <Legend iconSize={10} />
+        <Legend verticalAlign="top" />
       </PieChart>
     </ResponsiveContainer>
     </>
