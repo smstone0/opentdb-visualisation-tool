@@ -97,7 +97,7 @@ function App() {
   return (
     <>
       <h1>OpenTDB Visualisation Tool</h1>
-      <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
+      <select id="category-select" onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
         <option value="all">All Categories</option>
         {categories.map((category, index) => (
           <option key={index} value={category}>{category}</option>
@@ -124,8 +124,6 @@ function App() {
         </div>
         )}
       </div>
-      <div>{JSON.stringify(categoryCounts)} {JSON.stringify(difficultyCounts)}</div>
-      <div>{JSON.stringify(questions)}</div>
     </>
   )
 }
