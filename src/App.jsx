@@ -95,7 +95,7 @@ function App() {
           <div className="pie-chart">
             <DistributionPieChart
               data={difficultyCounts}
-              chartTitle={`Difficulty Breakdown for ${selectedCategory}`}
+              chartTitle={"Difficulty Breakdown"}
             />
           </div>
         </div>

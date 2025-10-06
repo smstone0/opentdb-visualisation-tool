@@ -14,7 +14,14 @@
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
-  gap: 2rem;
+  gap: 4rem;
+  height: 500px;
+}
+
+@media (max-width: 700px) {
+  .pie-chart-container {
+    flex-direction: column;
+  }
 }
 
 .pie-chart {
