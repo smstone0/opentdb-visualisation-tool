@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import DistributionPieChart from './components/DistributionPieChart.jsx'
 import DistributionMixBarChart from './components/DistributionMixBarChart.jsx'
+import he from 'he';
 
 function App() {
   const [questions, setQuestions] = useState(null)
@@ -12,7 +13,7 @@ function App() {
   const [categoryDifficultyDistribution, setCategoryDifficultyDistribution] = useState({})
 
   /**
-   * Get the distribution of all questions by category and difficulty level
+   * Get the distribution of all questions by category and difficulty level for bar chart
    * @param {*} questions
    * @returns {category: {easy: number, medium: number, hard: number}}
    */
@@ -26,7 +27,7 @@ function App() {
   }
 
   /**
-   * Get the number of questions belonging to the selected category
+   * Get the number of questions belonging to the selected category for pie chart
    * @param {*} questions
    * @param {*} selectedCategory
    * @returns {selected: number, total: number}
@@ -42,7 +43,7 @@ function App() {
   }
 
   /**
-   * Get the distribution of questions by difficulty level belonging to the selected category
+   * Get the distribution of questions by difficulty level belonging to the selected category for pie chart
    * @param {*} questions
    * @param {*} selectedCategory
    * @returns {easy: number, medium: number, hard: number}
@@ -61,20 +62,25 @@ function App() {
 
     /**
      * Fetch 50 questions from the Open Trivia Database API on page load
-     * Extract unique categories from the fetched questions and sort alphabetically
+     * Extract unique categories from the fetched questions and sort alphabetically for dropdown
      */
     useEffect(() => {
     fetch('https://opentdb.com/api.php?amount=50')
       .then(res => res.json())
       .then(json => {
-        setQuestions(json.results)
+        // Decode HTML entities in category names
+        const decodedQuestions = json.results?.map(q => ({
+        ...q,
+        category: he.decode(q.category),
+      }));
+        setQuestions(decodedQuestions)
         setSelectedCategory('all')
 
-        const uniqueCategories = [...new Set(json.results.map(q => q.category))]
+        const uniqueCategories = [...new Set(decodedQuestions.map(q => q.category))]
         uniqueCategories.sort()
         setCategories(uniqueCategories)
 
-        const categoryDifficultyCounts = getCategoryDifficultyCounts(json.results)
+        const categoryDifficultyCounts = getCategoryDifficultyCounts(decodedQuestions)
         setCategoryDifficultyDistribution(categoryDifficultyCounts)
       })
       .catch(err => console.error(err))
