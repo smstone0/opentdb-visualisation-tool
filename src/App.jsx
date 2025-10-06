@@ -80,14 +80,25 @@ function App() {
           <option key={index} value={category}>{category}</option>
         ))}
       </select>
-      <div className="chart-container">
+      <div className="mix-chart-container">
         {selectedCategory === 'all' ? (
           <DistributionMixBarChart data={categoryDifficultyDistribution} />
         ) : (
-          <>
-            <DistributionPieChart data={categoryCounts} chartTitle={`Category Count: ${categoryCounts.selected || 0}/${categoryCounts.total || 0}`} />
-            <DistributionPieChart data={difficultyCounts} chartTitle={`Difficulty Breakdown for ${selectedCategory}`} />
-          </>
+        <div className="pie-chart-container">
+          <div className="pie-chart">
+            <DistributionPieChart
+              data={categoryCounts}
+              chartTitle={`Category Count: ${categoryCounts.selected || 0}/${categoryCounts.total || 0}`}
+            />
+          </div>
+
+          <div className="pie-chart">
+            <DistributionPieChart
+              data={difficultyCounts}
+              chartTitle={`Difficulty Breakdown for ${selectedCategory}`}
+            />
+          </div>
+        </div>
         )}
       </div>
       <div>{JSON.stringify(categoryCounts)} {JSON.stringify(difficultyCounts)}</div>

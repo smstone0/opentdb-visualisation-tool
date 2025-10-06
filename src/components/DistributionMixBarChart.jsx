@@ -13,7 +13,7 @@ const DistributionMixBarChart = ({data}) => {
 
   return (
     <>
-    <h3>Distribution of Questions by All Categories and Difficulties</h3>
+    <h2>Distribution of Questions by All Categories and Difficulties</h2>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}

@@ -22,7 +22,7 @@ export default function DistributionPieChart({data, chartTitle}) {
   const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
   return (
     <>
-    <h3>{chartTitle}</h3>
+    <h2>{chartTitle}</h2>
     <ResponsiveContainer width="100%" height="100%">
       <PieChart width={400} height={400}>
         <Pie
