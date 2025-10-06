@@ -11,6 +11,11 @@ function App() {
   const [difficultyCounts, setDifficultyCounts] = useState({})
   const [categoryDifficultyDistribution, setCategoryDifficultyDistribution] = useState({})
 
+  /**
+   * Get the distribution of all questions by category and difficulty level
+   * @param {*} questions
+   * @returns {category: {easy: number, medium: number, hard: number}}
+   */
   function getCategoryDifficultyCounts(questions) {
     if (!questions) return {}
     return questions.reduce((acc, q) => {
@@ -20,6 +25,12 @@ function App() {
     }, {})
   }
 
+  /**
+   * Get the number of questions belonging to the selected category
+   * @param {*} questions
+   * @param {*} selectedCategory
+   * @returns {selected: number, total: number}
+   */
   function getCategoryCounts(questions, selectedCategory) {
     if (!questions) return {}
     const total = questions.length
@@ -30,6 +41,12 @@ function App() {
     return { selected, total }
   }
 
+  /**
+   * Get the distribution of questions by difficulty level belonging to the selected category
+   * @param {*} questions
+   * @param {*} selectedCategory
+   * @returns {easy: number, medium: number, hard: number}
+   */
   function getDifficultyCounts(questions, selectedCategory) {
     if (!questions) return {}
     let filtered = questions
