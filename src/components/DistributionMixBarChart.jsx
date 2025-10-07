@@ -1,16 +1,25 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import MixBarCustomTooltip from './MixBarCustomTooltip';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import MixBarCustomTooltip from "./MixBarCustomTooltip";
 
-const DistributionMixBarChart = ({data}) => {
-    if (!data || Object.keys(data).length === 0) {
-        return <p>No data available to display the chart</p>;
-    }
-    const chartData = Object.entries(data).map(([category, counts]) => ({
-        name: category,
-        easy: counts.easy || 0,
-        medium: counts.medium || 0,
-        hard: counts.hard || 0,
-    }));
+const DistributionMixBarChart = ({ data }) => {
+  if (!data || Object.keys(data).length === 0) {
+    return <p>No data available to display the chart</p>;
+  }
+  const chartData = Object.entries(data).map(([category, counts]) => ({
+    name: category,
+    easy: counts.easy || 0,
+    medium: counts.medium || 0,
+    hard: counts.hard || 0,
+  }));
 
   return (
     <>
@@ -31,7 +40,7 @@ const DistributionMixBarChart = ({data}) => {
           <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} />
           <YAxis />
           <Tooltip content={<MixBarCustomTooltip />} />
-          <Legend verticalAlign='top' height={36} />
+          <Legend verticalAlign="top" height={36} />
           <Bar dataKey="easy" stackId="a" fill="#00C49F" />
           <Bar dataKey="medium" stackId="a" fill="#FFBB28" />
           <Bar dataKey="hard" stackId="a" fill="#F16F6F" />
