@@ -12,6 +12,7 @@ function App() {
   const [difficultyCounts, setDifficultyCounts] = useState({});
   const [categoryDifficultyDistribution, setCategoryDifficultyDistribution] =
     useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   /**
    * Get the distribution of all questions by category and difficulty level for bar chart
@@ -68,16 +69,17 @@ function App() {
    * Extract unique categories from the fetched questions and sort alphabetically for dropdown
    */
   useEffect(() => {
+    setIsLoading(true);
     fetch("https://opentdb.com/api.php?amount=50")
       .then((res) => res.json())
       .then((json) => {
         // Decode HTML entities in category names
         const decodedQuestions = json.results?.map((q) => {
           let decodedCategory = he.decode(q.category);
-          
+
           // Remove prefix ending with ':' for better category readability
-          if (decodedCategory.includes(':')) {
-            decodedCategory = decodedCategory.split(':').pop().trim();
+          if (decodedCategory.includes(":")) {
+            decodedCategory = decodedCategory.split(":").pop().trim();
           }
           return {
             ...q,
@@ -96,8 +98,12 @@ function App() {
         const categoryDifficultyCounts =
           getCategoryDifficultyCounts(decodedQuestions);
         setCategoryDifficultyDistribution(categoryDifficultyCounts);
+        setIsLoading(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, []);
 
   /**
@@ -111,44 +117,52 @@ function App() {
   return (
     <>
       <h1>OpenTDB Visualisation Tool</h1>
-      <select
-        id="category-select"
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        value={selectedCategory}
-      >
-        <option value="all">All Categories</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-      <div className="mix-chart-container">
-        {selectedCategory === "all" ? (
-          <DistributionMixBarChart data={categoryDifficultyDistribution} />
-        ) : (
-          <div>
-            <button id="back-button" onClick={() => setSelectedCategory("all")}>
-              Back to All Categories
-            </button>
-            <div className="pie-chart-container">
-              <div className="pie-chart">
-                <DistributionPieChart
-                  data={categoryCounts}
-                  chartTitle={`Category Count: ${categoryCounts.selected || 0}/${categoryCounts.total || 0}`}
-                />
+      {isLoading ? (
+        <div id="loading-message">Loading questions...</div>
+      ) : (
+        <>
+          <select
+            id="category-select"
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedCategory}
+          >
+            <option value="all">All Categories</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <div className="mix-chart-container">
+            {selectedCategory === "all" ? (
+              <DistributionMixBarChart data={categoryDifficultyDistribution} />
+            ) : (
+              <div>
+                <button
+                  id="back-button"
+                  onClick={() => setSelectedCategory("all")}
+                >
+                  Back to All Categories
+                </button>
+                <div className="pie-chart-container">
+                  <div className="pie-chart">
+                    <DistributionPieChart
+                      data={categoryCounts}
+                      chartTitle={`Category Count: ${categoryCounts.selected || 0}/${categoryCounts.total || 0}`}
+                    />
+                  </div>
+                  <div className="pie-chart">
+                    <DistributionPieChart
+                      data={difficultyCounts}
+                      chartTitle={"Difficulty Breakdown"}
+                    />
+                  </div>
+                </div>
               </div>
-
-              <div className="pie-chart">
-                <DistributionPieChart
-                  data={difficultyCounts}
-                  chartTitle={"Difficulty Breakdown"}
-                />
-              </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </>
   );
 }
