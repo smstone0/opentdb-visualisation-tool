@@ -1,4 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import MixBarCustomTooltip from './MixBarCustomTooltip';
 
 const DistributionMixBarChart = ({data}) => {
     if (!data || Object.keys(data).length === 0) {
@@ -13,7 +14,7 @@ const DistributionMixBarChart = ({data}) => {
 
   return (
     <>
-    <h2>Distribution of Questions by All Categories and Difficulties</h2>
+      <h2>Distribution of Questions by All Categories and Difficulties</h2>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}
@@ -29,7 +30,7 @@ const DistributionMixBarChart = ({data}) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" angle={-45} textAnchor="end" interval={0} />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<MixBarCustomTooltip />} />
           <Legend verticalAlign='top' height={36} />
           <Bar dataKey="easy" stackId="a" fill="#00C49F" />
           <Bar dataKey="medium" stackId="a" fill="#FFBB28" />
@@ -37,7 +38,7 @@ const DistributionMixBarChart = ({data}) => {
         </BarChart>
       </ResponsiveContainer>
     </>
-    );
+  );
 };
 
 export default DistributionMixBarChart;
