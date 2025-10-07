@@ -8,3 +8,5 @@ Visualises trivia question distributions by category and difficulty.
 - Bar and Pie Charts
 - Category filtering
 - Responsive design
+
+View the tool [here.](https://smstone0.github.io/opentdb-visualisation-tool/)
