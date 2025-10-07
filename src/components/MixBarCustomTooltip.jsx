@@ -1,4 +1,4 @@
-import '../styles/DistributionMixBarChart.css';
+import '../styles/MixBarCustomTooltip.css';
 
 // Custom tooltip to display category name with difficulty counts
 const MixBarCustomTooltip = ({ active, payload, label }) => {
