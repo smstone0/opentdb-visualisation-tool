@@ -107,6 +107,13 @@ function App() {
         {selectedCategory === 'all' ? (
           <DistributionMixBarChart data={categoryDifficultyDistribution} />
         ) : (
+          <div>
+          <button
+            id="back-button"
+            onClick={() => setSelectedCategory('all')}
+          >
+            Back to All Categories
+          </button>
         <div className="pie-chart-container">
           <div className="pie-chart">
             <DistributionPieChart
@@ -121,6 +128,7 @@ function App() {
               chartTitle={"Difficulty Breakdown"}
             />
           </div>
+        </div>
         </div>
         )}
       </div>
