@@ -72,10 +72,18 @@ function App() {
       .then((res) => res.json())
       .then((json) => {
         // Decode HTML entities in category names
-        const decodedQuestions = json.results?.map((q) => ({
-          ...q,
-          category: he.decode(q.category),
-        }));
+        const decodedQuestions = json.results?.map((q) => {
+          let decodedCategory = he.decode(q.category);
+          
+          // Remove prefix ending with ':' for better category readability
+          if (decodedCategory.includes(':')) {
+            decodedCategory = decodedCategory.split(':').pop().trim();
+          }
+          return {
+            ...q,
+            category: decodedCategory,
+          };
+        });
         setQuestions(decodedQuestions);
         setSelectedCategory("all");
 
