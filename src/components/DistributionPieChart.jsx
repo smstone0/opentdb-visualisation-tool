@@ -1,7 +1,15 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from 'recharts';
 
 const radian = Math.PI / 180;
-const colours = ['#00C49F', '#FFBB28', '#F16F6F'];
+
+// Meet colour contrast standards
+const difficultyColourMap = {
+  easy: '#00C49F',
+  medium: '#FFBB28',
+  hard: '#F16F6F'
+};
+// Alternate colours for non-difficulty charts
+const colours = ['#63b8e7ff', '#ef6de4ff'];
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -37,7 +45,7 @@ export default function DistributionPieChart({data, chartTitle}) {
           isAnimationActive={true}
         >
           {chartData.map((entry, index) => (
-            <Cell key={`cell-${entry.name}`} fill={colours[index % colours.length]} />
+            <Cell key={`cell-${entry.name}`} fill={difficultyColourMap[entry.name] || colours[index % colours.length]} />
           ))}
         </Pie>
         <Legend verticalAlign="top" />
